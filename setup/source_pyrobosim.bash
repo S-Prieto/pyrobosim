@@ -25,7 +25,7 @@
 
 # User variables -- change this to meet your needs
 export VIRTUALENV_FOLDER=~/python-virtualenvs/pyrobosim
-export PYROBOSIM_WS=~/pyrobosim_ws
+export PYROBOSIM_WS=~/ros2_ws
 
 if [ -n "$VIRTUAL_ENV" ]
 then
