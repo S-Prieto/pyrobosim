@@ -15,7 +15,7 @@ from pyrobosim.navigation import ConstantVelocityExecutor, PathPlanner
 from pyrobosim.utils.general import get_data_folder
 from pyrobosim.utils.pose import Pose
 from pyrobosim_ros.ros_interface import WorldROSWrapper
-
+from rclpy.logging import get_logger
 
 data_folder = get_data_folder()
 
@@ -105,6 +105,8 @@ def create_world():
 
 
 def create_world_from_yaml(world_file):
+    logger = get_logger("pyrobosim")
+    logger.info(f"[DEBUG] Loading yaml file: {world_file}.")
     return WorldYamlLoader().from_yaml(os.path.join(data_folder, world_file))
 
 
@@ -117,10 +119,10 @@ def create_ros_node():
     # Set the world
     world_file = node.get_parameter("world_file").get_parameter_value().string_value
     if world_file == "":
-        node.get_logger().info("Creating demo world programmatically.")
+        node.get_logger().info("[TEST] Creating demo world programmatically.")
         world = create_world()
     else:
-        node.get_logger().info(f"Using world file {world_file}.")
+        node.get_logger().info(f"[TEST] Using world file {world_file}.")
         world = create_world_from_yaml(world_file)
 
     node.set_world(world)

@@ -17,6 +17,7 @@ ament_python_install_package(
     PACKAGE_DIR ../pyrobosim/pyrobosim)
 install(PROGRAMS
   examples/demo.py
+  examples/task_planner.py
   examples/demo_commands.py
   examples/demo_pddl_world.py
   examples/demo_pddl_planner.py

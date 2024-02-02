@@ -8,7 +8,7 @@ from pyrobosim.utils.pose import Pose
 from pyrobosim.navigation import OccupancyGrid
 
 # Load a test world.
-world_file = os.path.join(get_data_folder(), "test_world.yaml")
+world_file = os.path.join(get_data_folder(), "task_planner_world.yaml")
 world = WorldYamlLoader().from_yaml(world_file)
 
 
@@ -25,7 +25,7 @@ def demo_astar():
     }
 
     planner = PathPlanner("astar", **planner_config)
-    start = Pose(x=-0.5, y=-0.5)
+    start = Pose(x=3, y=-1)
     goal = Pose(x=3.0, y=3.0)
     robot.set_pose(start)
     robot.set_path_planner(planner)
