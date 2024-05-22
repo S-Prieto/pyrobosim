@@ -24,6 +24,7 @@ class Robot:
         radius=0.0,
         height=0.0,
         color=(0.8, 0.0, 0.8),
+        battery_capacity=100,
         max_linear_velocity=np.inf,
         max_angular_velocity=np.inf,
         max_linear_acceleration=np.inf,
@@ -31,7 +32,6 @@ class Robot:
         path_planner=None,
         path_executor=None,
         grasp_generator=None,
-        battery_capacity=50,
     ):
         """
         Creates a robot instance.
@@ -46,6 +46,8 @@ class Robot:
         :type height: float, optional
         :param color: Robot color, as an RGB tuple or string.
         :type color: tuple[float] / str, optional
+        :param battery_capacity: Maximum battery capacity of the robot, as an integer.
+        :type battery_capacity: int16
         :param max_linear_velocity: The maximum linear velocity magnitude, in m/s.
         :type max_linear_velocity: float
         :param max_angular_velocity: The maximum angular velocity magnitude, in rad/s.
@@ -110,9 +112,6 @@ class Robot:
         """
         return self.dynamics.pose
     
-    def get_battery(self):
-        return self.current_battery
-
     def set_pose(self, pose):
         """
         Sets the robot pose.
@@ -121,6 +120,22 @@ class Robot:
         :type pose: :class:`pyrobosim.utils.pose.Pose`
         """
         self.dynamics.pose = pose
+
+    def get_battery(self):
+        """
+        Gets the robot current battery.
+
+        :return: The robot current battery.
+        """
+        return self.current_battery
+    
+    def set_battery(self, current_battery):
+        """
+        Sets the robot current battery.
+
+        :param current_battery: Updated current battery.
+        """
+        self.current_battery = current_battery
 
     def set_path_planner(self, path_planner):
         """
