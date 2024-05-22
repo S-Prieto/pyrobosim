@@ -31,6 +31,7 @@ class Robot:
         path_planner=None,
         path_executor=None,
         grasp_generator=None,
+        battery_capacity=50,
     ):
         """
         Creates a robot instance.
@@ -96,6 +97,10 @@ class Robot:
         self.location = None
         self.manipulated_object = None
 
+        # Battery attributes
+        self.battery_capacity = battery_capacity
+        self.current_battery = battery_capacity
+
     def get_pose(self):
         """
         Gets the robot pose.
@@ -104,6 +109,9 @@ class Robot:
         :rtype: :class:`pyrobosim.utils.pose.Pose`
         """
         return self.dynamics.pose
+    
+    def get_battery(self):
+        return self.current_battery
 
     def set_pose(self, pose):
         """
