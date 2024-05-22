@@ -291,6 +291,9 @@ class WorldROSWrapper(Node):
             target=robot.execute_action, args=(task_action_from_ros(msg),)
         )
         action_thread.start()
+        new_battery_level = robot.get_battery() - 10
+        robot.set_battery(new_battery_level)
+        self.get_logger().info(f"Battery updated for {msg.robot} to {new_battery_level}")
 
     def plan_callback(self, msg):
         """

@@ -425,6 +425,7 @@ class Robot:
         if self.world.has_gui:
             self.world.gui.set_buttons_during_action(False)
 
+
         if action.type == "navigate":
             if self.world.has_gui:
                 self.executing_nav = True
