@@ -465,8 +465,9 @@ class Robot:
                 success = self.place_object(action.pose)
 
         elif action.type == "charge":
+            print(f"[{self.name}] Charging battery to full capacity: {self.battery_capacity}")
+            self.executing_action = False
             success = self.set_battery(self.battery_capacity)
-
 
         else:
             print(f"[{self.name}] Invalid action type: {action.type}")

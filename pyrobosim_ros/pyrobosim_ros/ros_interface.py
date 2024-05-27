@@ -287,13 +287,18 @@ class WorldROSWrapper(Node):
                 "Currently executing action(s). Discarding this one."
             )
             return
+                
         action_thread = threading.Thread(
             target=robot.execute_action, args=(task_action_from_ros(msg),)
         )
         action_thread.start()
-        new_battery_level = robot.get_battery() - 10
-        robot.set_battery(new_battery_level)
-        self.get_logger().info(f"Battery updated for {msg.robot} to {new_battery_level}")
+        if msg.type != 'charge':    
+            new_battery_level = robot.get_battery() - 20
+            robot.set_battery(new_battery_level)
+            self.get_logger().info(f"Battery updated for {msg.robot} to {new_battery_level}")
+        else:
+            self.get_logger().info(f"Charging {msg.robot} to {robot.get_battery()}")
+        
 
     def plan_callback(self, msg):
         """
