@@ -455,14 +455,18 @@ class Robot:
                 success = self.world.gui.canvas.pick_object(
                     self, action.object, action.pose
                 )
+                self.executing_action = False
             else:
                 success = self.pick_object(action.object, action.pose)
+                self.executing_action = False
 
         elif action.type == "place":
             if self.world.has_gui:
                 success = self.world.gui.canvas.place_object(self, action.pose)
+                self.executing_action = False
             else:
                 success = self.place_object(action.pose)
+                self.executing_action = False
 
         elif action.type == "charge":
             print(f"[{self.name}] Charging battery to full capacity: {self.battery_capacity}")
