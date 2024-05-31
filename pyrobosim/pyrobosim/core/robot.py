@@ -4,6 +4,8 @@ import time
 import threading
 import numpy as np
 import warnings
+import rclpy
+from rclpy.logging import get_logger
 
 from .dynamics import RobotDynamics2D
 from .locations import ObjectSpawn
@@ -32,6 +34,7 @@ class Robot:
         path_planner=None,
         path_executor=None,
         grasp_generator=None,
+        
     ):
         """
         Creates a robot instance.
@@ -102,6 +105,9 @@ class Robot:
         # Battery attributes
         self.battery_capacity = battery_capacity
         self.current_battery = battery_capacity
+
+        # ROS logger
+        self.logger = get_logger("pyrobosim")
 
     def get_pose(self):
         """
@@ -384,6 +390,9 @@ class Robot:
                     )
                 if is_valid_pose:
                     pose = pose_sample
+                    ## Print corners
+                    corners = loc.polygon.exterior.coords
+                    # self.logger.info(f"Corners of the polygon: {list(corners)}")
                     break
             if not is_valid_pose:
                 warnings.warn(f"Could not sample a placement position at {loc.name}")
