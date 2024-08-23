@@ -142,31 +142,31 @@ locations:
   - name: pallet0
     category: storage_pallet
     parent: storage
-    pose: [-3.7, -1, 0.0, 0]
+    pose: [-3.5, -1, 0.0, 0]
   - name: pallet1
     category: storage_pallet
     parent: build
-    pose: [0, 4.7, 0, -1.57]
+    pose: [0, 4.5, 0, -1.57]
 
 
 # OBJECTS: Can be picked, placed, and moved by robot
 objects:
-  - category: h_beam
+  - category: v_beam
     parent: pallet0
     pose: [-3.8, -0.4, 0, 0]
-  - category: h_beam
+  - category: v_beam
     parent: pallet0
     pose: [-3.6, -0.4, 0, 0]
-  - category: h_beam
+  - category: v_beam
     parent: pallet0
     pose: [-3.8, -1, 0, 0]
-  - category: h_beam
+  - category: v_beam
     parent: pallet0
     pose: [-3.6, -1, 0, 0]    
-  - category: v_beam
+  - category: h_beam
     parent: pallet0
-    pose: [-3.8, -1.6, 0, 0]
-  - category: v_beam
+    pose: [-3.4, -1, 0, 0]
+  - category: h_beam
     parent: pallet0
-    pose: [-3.6, -1.6, 0, 0]    
+    pose: [-3.2, -1, 0, 0]    
 

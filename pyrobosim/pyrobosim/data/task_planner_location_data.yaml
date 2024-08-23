@@ -5,13 +5,13 @@
 storage_pallet:
   footprint:
     type: box
-    dims: [0.5, 1.9]
+    dims: [0.9, 1.9]
     height: 0.1
   locations:
     - name: "pallet"
       footprint:
         type: box
-        dims: [0.4, 1.8]
+        dims: [0.8, 1.8]
         offset: [0, 0]
       nav_poses:
         - [1, 0, 0]

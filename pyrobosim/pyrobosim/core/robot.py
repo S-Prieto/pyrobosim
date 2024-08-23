@@ -351,7 +351,7 @@ class Robot:
         self._attach_object(obj)
         return True
 
-    def place_object(self, pose=None):
+    def place_object(self, pose):
         """
         Places an object in a target location and (optionally) pose.
 
@@ -377,6 +377,7 @@ class Robot:
         is_valid_pose = False
         poly = self.manipulated_object.raw_collision_polygon
         if pose is None:
+            self.logger.info(f"Pose is none: {pose}")
             # If no pose was specified, sample one
             for _ in range(self.world.max_object_sample_tries):
                 x_sample, y_sample = sample_from_polygon(loc.polygon)
@@ -392,21 +393,22 @@ class Robot:
                     pose = pose_sample
                     ## Print corners
                     corners = loc.polygon.exterior.coords
-                    # self.logger.info(f"Corners of the polygon: {list(corners)}")
+                    self.logger.info(f"Corners of the polygon: {list(corners)}")
                     break
             if not is_valid_pose:
                 warnings.warn(f"Could not sample a placement position at {loc.name}")
                 return False
         else:
             # If a pose was specified, collision check it
+            self.logger.info(f"Pose is specified: {pose}")
             poly = transform_polygon(poly, pose)
             is_valid_pose = poly.within(loc.polygon)
-            for other_obj in loc.children:
-                is_valid_pose = is_valid_pose and not poly.intersects(
-                    other_obj.collision_polygon
-                )
+            # for other_obj in loc.children:
+            #     is_valid_pose = is_valid_pose and not poly.intersects(
+            #         other_obj.collision_polygon
+            #     )
             if not is_valid_pose:
-                warnings.warn(f"Pose in collision or not in location {loc.name}.")
+                self.logger.info(f"Pose in collision or not in location {loc.name}.")
                 return False
 
         if is_valid_pose:
