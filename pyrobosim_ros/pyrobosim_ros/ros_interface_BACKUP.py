@@ -1,3 +1,5 @@
+""" ROS interfaces to world model. """
+
 import os
 import numpy as np
 import rclpy
@@ -14,8 +16,8 @@ from pyrobosim_msgs.msg import (
     ObjectState,
     TaskAction,
     TaskPlan,
-    WorldState,
 )
+from pyrobosim_msgs.srv import RequestWorldState
 from .ros_conversions import (
     pose_from_ros,
     pose_to_ros,
@@ -47,7 +49,7 @@ class WorldROSWrapper(Node):
             * Subscribe to task plans on the ``commanded_plan`` topic.
             * Subscribe to robot velocity commands on the ``robot_name/cmd_vel`` topic.
             * Publish robot states on the ``robot_name/robot_state`` topic.
-            * Publish the world state on the ``world_state`` topic.
+            * Serve a ``request_world_state`` service to retrieve the world state for planning.
 
         :param world: World model instance.
         :type world: :class:`pyrobosim.core.world.World`
@@ -101,20 +103,12 @@ class WorldROSWrapper(Node):
             callback_group=self.action_cb_group,
         )
 
-        # Remove world state service server
-        # (Old code for the request service was removed here)
-
-        # Add world state publisher
-        self.world_state_pub = self.create_publisher(
-            WorldState,
-            "world_state",
-            10,
-            callback_group=ReentrantCallbackGroup(),
-        )
-
-        # Timer to periodically publish the world state
-        self.world_state_pub_timer = self.create_timer(
-            self.state_pub_rate, self.publish_world_state
+        # World state service server
+        self.world_state_srv = self.create_service(
+            RequestWorldState,
+            "request_world_state",
+            self.world_state_callback,
+            callback_group=self.query_cb_group,
         )
 
         # Initialize robot specific interface lists
@@ -209,59 +203,27 @@ class WorldROSWrapper(Node):
         dynamics_timer = self.create_timer(self.dynamics_rate, self.dynamics_callback)
         self.robot_dynamics_timers.append(dynamics_timer)
 
-    def publish_world_state(self):
-        """Publishes the entire world state to the 'world_state' topic."""
-        world_state_msg = WorldState()
-
-        # Add location states
-        for loc in self.world.locations:
-            loc_msg = LocationState(
-                name=loc.name,
-                category=loc.category,
-                parent=loc.get_room_name(),
-                pose=pose_to_ros(loc.pose),
-            )
-            world_state_msg.locations.append(loc_msg)
-
-        # Add object states
-        for obj in self.world.objects:
-            obj_msg = ObjectState(
-                name=obj.name,
-                category=obj.category,
-                parent=obj.parent.name,
-                pose=pose_to_ros(obj.pose),
-            )
-            world_state_msg.objects.append(obj_msg)
-
-        # Add robot states
-        for robot in self.world.robots:
-            world_state_msg.robots.append(self.package_robot_state(robot))
-
-        # Publish the world state message
-        self.world_state_pub.publish(world_state_msg)
-        # self.get_logger().info("Published world state.")
-
     def remove_robot_ros_interfaces(self, robot):
-            """
-            Removes ROS interfaces for a specific robot.
+        """
+        Removes ROS interfaces for a specific robot.
 
-            :param robot: Robot instance.
-            :type robot: :class:`pyrobosim.core.robot.Robot`
-            """
-            for i, r in self.world.robots:
-                if r == robot:
-                    sub = self.robot_command_subs.pop(i)
-                    self.destroy_subscription(sub)
-                    del sub
-                    pub = self.robot_state_pubs.pop(i)
-                    self.destroy_publisher(pub)
-                    del pub
-                    pub_timer = self.robot_state_pub_threads.pop(i)
-                    pub_timer.destroy()
-                    del pub_thread
-                    dynamics_timer = self.robot_dynamics_timers.pop(i)
-                    dynamics_timer.destroy()
-                    del dynamics_timer
+        :param robot: Robot instance.
+        :type robot: :class:`pyrobosim.core.robot.Robot`
+        """
+        for i, r in self.world.robots:
+            if r == robot:
+                sub = self.robot_command_subs.pop(i)
+                self.destroy_subscription(sub)
+                del sub
+                pub = self.robot_state_pubs.pop(i)
+                self.destroy_publisher(pub)
+                del pub
+                pub_timer = self.robot_state_pub_threads.pop(i)
+                pub_timer.destroy()
+                del pub_thread
+                dynamics_timer = self.robot_dynamics_timers.pop(i)
+                dynamics_timer.destroy()
+                del dynamics_timer
 
     def dynamics_callback(self):
         """
@@ -429,6 +391,7 @@ class WorldROSWrapper(Node):
             response.state.robots.append(self.package_robot_state(robot))
 
         return response
+
 
 def update_world_from_state_msg(world, msg):
     """
