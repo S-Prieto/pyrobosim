@@ -151,12 +151,12 @@ locations:
 
 # OBJECTS: Can be picked, placed, and moved by robot
 objects:
-  # - category: v_beam
-  #   parent: pallet0
-  #   pose: [-3.8, -0.4, 0, 0]
-  # - category: v_beam
-  #   parent: pallet0
-  #   pose: [-3.6, -0.4, 0, 0]
+  - category: v_beam
+    parent: pallet0
+    pose: [-3.8, -0.4, 0, 0]
+  - category: v_beam
+    parent: pallet0
+    pose: [-3.6, -0.4, 0, 0]
   - category: v_beam
     parent: pallet0
     pose: [-3.8, -1, 0, 0]
